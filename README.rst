@@ -57,23 +57,26 @@ of the newer ZTK code (for example `zope.container
 <https://pypi.python.org/pypi/zope.container>`_ base clasess) which use unicode
 ids.
 
-If any code imports any of the id checking routines directly it will use
-the original implementation. This package will replace such direct imports
-with monkey patches for all packages included in a standard Plone install,
-but other packages may need to be changes to use module imports. For example
-if code currently does this::
+If any code imports any of the regular expressions used to implement
+id checking routines directly it will use the expression. This package will
+replace such direct imports with monkey patches for all packages included in a
+standard Plone install, but other packages may need to be changes to use module
+imports. For example if code currently does this::
 
-   from OFS.ObjectManager import checkValidId
+   from OFS.ObjectManager import bad_id
    ...
-   if not checkValidId(some_id):
+   if not bad_id(some_id):
       ...
 
 it can be rewritten like this::
 
    import OFS.ObjectManager
    ...
-   if not OFS.ObjectManager.checkValidId(some_id):
+   if not OFS.ObjectManager.bad_id(some_id):
       ...
+
+You are strongly adviced not to use this regular expressions directly but use
+the ``checkValidId`` directly.
 
 
 Implementation details

@@ -90,12 +90,18 @@ def bad_chars(self, id):
 _patches = {}
 
 
+def _update_globals(original, new):
+    new_globals = set(new.func_globals) - set(original.func_globals)
+    for key in new_globals:
+        original.func_globals[key] = new.func_globals[key]
+
+
 def patch():
     if 'checkValidId' not in _patches:
         log.info('Replacing checkValidId with custom version.')
-        _patches['checkValidId'] = OFS.ObjectManager.checkValidId
-        OFS.ObjectManager.checkValidId = checkValidId
-        OFS.ObjectManager.ObjectManager._checkId = checkValidId
+        _patches['checkValidId'] = OFS.ObjectManager.checkValidId.func_code
+        _update_globals(OFS.ObjectManager.checkValidId, checkValidId)
+        OFS.ObjectManager.checkValidId.func_code = checkValidId.func_code
     if 'bad_id' not in _patches:
         log.info('Replacing bad_id with custom version.')
         _patches['bad_id'] = OFS.ObjectManager.bad_id
@@ -105,20 +111,19 @@ def patch():
         Products.CMFPlone.PloneTool.bad_id = bad_id
     if 'bad_chars' not in _patches:
         log.info('Replacing PloneTool.bad_chars with custom version.')
-        _patches['bad_chars'] = Products.CMFPlone.PloneTool.PloneTool.bad_chars
+        _patches['bad_chars'] = Products.CMFPlone.PloneTool.PloneTool.bad_chars.func_code
         _patches['BAD_CHARS'] = Products.CMFPlone.PloneTool.BAD_CHARS
         del Products.CMFPlone.PloneTool.BAD_CHARS
-        Products.CMFPlone.PloneTool.PloneTool.bad_chars = bad_chars
+        _update_globals(Products.CMFPlone.PloneTool.PloneTool.bad_chars.im_func, bad_chars)
+        Products.CMFPlone.PloneTool.PloneTool.bad_chars.im_func.func_code = bad_chars.func_code
 
 
 def unpatch():
     if 'checkValidId' in _patches:
         log.info('Restoring original checkValidId.')
         original = _patches.pop('checkValidId')
-        OFS.ObjectManager.checkValidId = original
-        OFS.ObjectManager.ObjectManager._checkId = original
+        OFS.ObjectManager.checkValidId.func_code = original
     if 'bad_id' in _patches:
-        log.info('Restoring original bad_id.')
         original = _patches.pop('bad_id')
         OFS.ObjectManager.bad_id = original
         Products.CMFCore.DirectoryView.bad_id = original
@@ -126,5 +131,5 @@ def unpatch():
         Products.CMFPlone.PloneTool.bad_id = original
     if 'bad_chars' in _patches:
         log.info('Restoring original PloneTool.bad_chars.')
-        Products.CMFPlone.PloneTool.PloneTool.bad_chars = _patches.pop('bad_chars')
+        Products.CMFPlone.PloneTool.PloneTool.bad_chars.im_.func_code = _patches.pop('bad_chars')
         Products.CMFPlone.PloneTool.BAD_CHARS = _patches.pop('BAD_CHARS')
