@@ -8,7 +8,7 @@ How to use
 This package can easily be added to your Plone site. You will need to do two
 things: install the `experimental.utf8id` package and load its ZCML. If you
 are using `zc.buildout <http://www.buildout.org/>`_ this can be done by adding
-a few lines to your `buildout.cfg` file.
+a few lines to your ``buildout.cfg`` file.
 
 ::
 
@@ -48,14 +48,14 @@ unexpected places.
 Caveats
 =======
 
-Zope has a simple rule: object ids (both the traditional `id` attribute and
-the newer `__name__` attribute **must** be str instances. If any code violates
-this rule an object path will contain a mixture of str and unicode instances
-which will cause problems if the str instances contain anything other than
-stock ASCII characters. Unfortunately means it is not possible to use some
+Zope has a simple rule: object ids (both the traditional ``id`` attribute and
+the newer ``__name__`` attribute **must** be str instances. If any code
+violates this rule an object path will contain a mixture of str and unicode
+instances which will cause problems if the str instances contain anything other
+than stock ASCII characters. Unfortunately means it is not possible to use some
 of the newer ZTK code (for example `zope.container
-<https://pypi.python.org/pypi/zope.container>`_ base clasess) which use
-unicode ids.
+<https://pypi.python.org/pypi/zope.container>`_ base clasess) which use unicode
+ids.
 
 If any code imports any of the id checking routines directly it will use
 the original implementation. This package will replace such direct imports
@@ -83,8 +83,8 @@ URL normalization
 -----------------
 
 `plone.i18n` implements URL normalization code which is used by Archetypes
-to generate ids for new content. This package overrides `IURLNormalizer`
-and `IUserPreferredURLNormalizer` to allow all unicode alphanumerical
+to generate ids for new content. This package overrides ``IURLNormalizer``
+and ``IUserPreferredURLNormalizer`` to allow all unicode alphanumerical
 characters. In order to provide different encodings for the same string
 to occur it will normalize the unicode string to NKFC form. 
 
@@ -95,13 +95,13 @@ There are several utility functions that check if an id is valid. All of these
 are replaced using monkey patches with new code paths. The replaces functions
 are:
 
-* `OFS.ObjectManager.checkValidId`
-* `OFS.ObjectManager.ObjectManager._checkId` (a copy of `OFS.ObjectManager.checkValidID`)
-* `OFS.ObjectManaged.bad_id`, including places where it is imported directly:
-  `Products.CMFCore.DirectoryView.bad_id`,
-  `Products.CMFFormController.FormController.bad_id` and
-  `Products.CMFPlone.PloneTool.bad_id`.
-* `Products.CMFPlone.PloneTool.PloneTool.bad_chars`
+* ``OFS.ObjectManager.checkValidId``
+* ``OFS.ObjectManager.ObjectManager._checkId`` (a copy of ``OFS.ObjectManager.checkValidID``)
+* ``OFS.ObjectManaged.bad_id``, including places where it is imported directly:
+  ``Products.CMFCore.DirectoryView.bad_id``,
+  ``Products.CMFFormController.FormController.bad_id`` and
+  ``Products.CMFPlone.PloneTool.bad_id``.
+* ``Products.CMFPlone.PloneTool.PloneTool.bad_chars``
 
-In addition `Products.CMFPlone.PloneTool.BAD_CHARS` is removed to prevent other
+In addition ``Products.CMFPlone.PloneTool.BAD_CHARS`` is removed to prevent other
 code from using it directly.
