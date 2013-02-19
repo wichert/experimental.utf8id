@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five">
+
+  <utility
+    component=".normalizer.utf8_url_normalizer"
+    permission="zope.Public"
+    />
+
+  <adapter
+    factory=".normalizer.Utf8UserPreferredURLNormalizer"
+    />
+
+</configure>
+

@@ -1,0 +1,16 @@
+.DS_Store
+*.pyc
+*.pyo
+*~
+*.sw?
+/.installed.cfg
+/.mr.developer.cfg
+/bin
+/develop-eggs
+/dist
+/parts
+/src/experimental.utf8id.egg-info/
+/var
+/src/Zope2
+/src/plone.portlets
+/src/plone.app.portlets

@@ -1,0 +1,4 @@
+exclude .* 
+include *.rst
+include buidout.cfg
+recursive-include src/experimental/utf8id *.zcml
